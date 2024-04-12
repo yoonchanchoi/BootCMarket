@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">BootCMarket</string>
+    <string name="detail_temper">😋</string>
+    <string name="detail_temperature_manners"><u>매너온도</u></string>
+</resources>
