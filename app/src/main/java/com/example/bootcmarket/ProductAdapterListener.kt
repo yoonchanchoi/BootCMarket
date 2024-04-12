@@ -1,5 +1,7 @@
 package com.example.bootcmarket
 
+import com.example.model.Product
+
 interface ProductAdapterListener {
-    fun onItemClick(position: Int)
+    fun onItemClick(product: Product)
 }
