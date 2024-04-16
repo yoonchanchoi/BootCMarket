@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bootcmarket.databinding.ActivityMainBinding
@@ -25,8 +26,15 @@ class MainActivity : AppCompatActivity(), ProductAdapterListener {
     private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
-    private lateinit var products: ArrayList<Product>
+    private lateinit var products: MutableList<Product>
     private lateinit var productAdapter: ProductAdapter
+    private val fadeOut = AlphaAnimation(1.0f, 0.0f).apply {
+        duration = 500
+    }
+
+    private val fadeIn = AlphaAnimation(0.0f, 1.0f).apply {
+        duration = 500
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,7 +70,7 @@ class MainActivity : AppCompatActivity(), ProductAdapterListener {
         }
     }
 
-    private fun setProductAdapter(products: ArrayList<Product>) {
+    private fun setProductAdapter(products: MutableList<Product>) {
         productAdapter = ProductAdapter(this, products)
         val productLinearLayoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
@@ -87,23 +95,16 @@ class MainActivity : AppCompatActivity(), ProductAdapterListener {
         }
 
         binding.rv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-
-            val fadeOut = AlphaAnimation(1.0f, 0.0f).apply {
-                duration = 1000
-            }
-
-            val fadeIn = AlphaAnimation(0.0f, 1.0f).apply {
-                duration = 1000
-            }
-
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (!binding.rv.canScrollVertically(-1)) {
-                    binding.fb.visibility = View.GONE
+                    binding.fb.isVisible = false
                     binding.fb.startAnimation(fadeOut)
                 } else {
-                    binding.fb.visibility = View.VISIBLE
-                    binding.fb.startAnimation(fadeIn)
+                    if(!binding.fb.isVisible){
+                        binding.fb.isVisible = true
+                        binding.fb.startAnimation(fadeIn)
+                    }
                 }
             }
         })
@@ -143,8 +144,12 @@ class MainActivity : AppCompatActivity(), ProductAdapterListener {
         this.notificationChannelCreate()
     }
 
+
+    //다른 곳에서 쓸 경우 아에 밖으로 빼서 사용하기
+    //factory 디자인 패턴에 쓰인다.
+    //arrayList -> List(사전 방지를 위해서)
     companion object{
-        val PRODUCTS = arrayListOf(
+        val PRODUCTS = mutableListOf(
         Product(1,R.drawable.sample1,"산진 한달된 선풍기 팝니다","이사가서 필요가 없어졌어요 급하게 내놓습니다","대현동",1000,"서울 서대문구 창천동",13,25),
         Product(2,R.drawable.sample2,"김치냉장고","이사로인해 내놔요","안마담",20000,"인천 계양구 귤현동",8,28),
         Product(3,R.drawable.sample3,"샤넬 카드지갑","고퀄지갑이구요\n사용감이 있어서 싸게 내어둡니다","코코유",10000,"수성구 범어동",23,5),

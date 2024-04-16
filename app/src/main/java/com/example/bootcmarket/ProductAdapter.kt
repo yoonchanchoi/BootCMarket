@@ -8,7 +8,7 @@ import com.example.model.Product
 
 class ProductAdapter(
     private val productAdapterListener: ProductAdapterListener,
-    private val products: ArrayList<Product>
+    private val products: MutableList<Product>
 ): RecyclerView.Adapter<ProductViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
