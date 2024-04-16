@@ -86,6 +86,32 @@ class MainActivity : AppCompatActivity(), ProductAdapterListener {
         startActivity(intent)
     }
 
+    override fun onItemLognClick(position: Int):Boolean {
+        var builder = AlertDialog.Builder(this@MainActivity)
+        builder.setTitle("상품삭제")
+        builder.setMessage("상품을 정말로 삭제하시겠습니까?")
+        builder.setIcon(R.drawable.ic_round_question_answer)
+
+        // 버튼 클릭시에 무슨 작업을 할 것인가!
+        val listener = object : DialogInterface.OnClickListener {
+            override fun onClick(p0: DialogInterface, p1: Int) {
+                when (p1) {
+                    DialogInterface.BUTTON_POSITIVE ->
+                        productAdapter.deletItem(position)
+
+
+                    DialogInterface.BUTTON_NEGATIVE ->
+                        p0.dismiss()
+                }
+            }
+        }
+
+        builder.setPositiveButton("확인", listener)
+        builder.setNegativeButton("취소", listener)
+        builder.show()
+        return true
+    }
+
     private fun setupListener() {
         binding.ivNotification.setOnClickListener {
             this.notification()
@@ -146,7 +172,7 @@ class MainActivity : AppCompatActivity(), ProductAdapterListener {
 
 
     //다른 곳에서 쓸 경우 아에 밖으로 빼서 사용하기
-    //factory 디자인 패턴에 쓰인다.
+    //companion objectfactory 디자인 패턴에 쓰인다.
     //arrayList -> List(사전 방지를 위해서)
     companion object{
         val PRODUCTS = mutableListOf(

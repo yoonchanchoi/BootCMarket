@@ -22,4 +22,9 @@ class ProductAdapter(
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
         holder.bind(products[position], productAdapterListener)
     }
+
+    fun deletItem(position: Int){
+        products.removeAt(position)
+        notifyDataSetChanged()
+    }
 }
