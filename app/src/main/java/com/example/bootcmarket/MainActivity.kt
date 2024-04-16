@@ -27,7 +27,6 @@ class MainActivity : AppCompatActivity(), ProductAdapterListener {
     }
     private lateinit var products: ArrayList<Product>
     private lateinit var productAdapter: ProductAdapter
-    private var flag = true
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -102,11 +101,9 @@ class MainActivity : AppCompatActivity(), ProductAdapterListener {
                 if (!binding.rv.canScrollVertically(-1)) {
                     binding.fb.visibility = View.GONE
                     binding.fb.startAnimation(fadeOut)
-                    flag = true
-                } else if (flag) {
+                } else {
                     binding.fb.visibility = View.VISIBLE
                     binding.fb.startAnimation(fadeIn)
-                    flag = false
                 }
             }
         })
