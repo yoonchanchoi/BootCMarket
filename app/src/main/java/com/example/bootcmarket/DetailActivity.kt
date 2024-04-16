@@ -44,7 +44,6 @@ class DetailActivity : AppCompatActivity() {
         }
     }
 
-
     private fun setupView() {
         val formatter = DecimalFormat("#,###")
 
@@ -55,11 +54,10 @@ class DetailActivity : AppCompatActivity() {
         binding.tvContent.text = product.content
         binding.tvBottomPrice.text = formatter.format(product.price) + "원"
     }
+
     private fun setupBackListener(){
         binding.ivBack.setOnClickListener {
             this.finish()
         }
-
     }
-
 }

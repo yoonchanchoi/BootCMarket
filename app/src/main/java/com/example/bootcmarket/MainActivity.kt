@@ -6,6 +6,9 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
+import android.view.View
+import android.view.animation.AlphaAnimation
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -13,16 +16,18 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.bootcmarket.databinding.ActivityMainBinding
 import com.example.model.Product
 
-class MainActivity : AppCompatActivity(),ProductAdapterListener {
+class MainActivity : AppCompatActivity(), ProductAdapterListener {
 
     private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
     private lateinit var products: ArrayList<Product>
     private lateinit var productAdapter: ProductAdapter
+    private var flag = true
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,14 +44,15 @@ class MainActivity : AppCompatActivity(),ProductAdapterListener {
         notificationPermission()
         setProductAdapter(products)
         addOnBackPressedCallback()
-        notificationListener()
+        setupListener()
     }
 
 
-    private fun setupData(){
+    private fun setupData() {
         products = PRODUCTS
     }
-    private fun notificationPermission(){
+
+    private fun notificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (!NotificationManagerCompat.from(this).areNotificationsEnabled()) {
                 val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
@@ -68,15 +74,42 @@ class MainActivity : AppCompatActivity(),ProductAdapterListener {
     }
 
     override fun onItemClick(product: Product) {
-        val intent = Intent(this,DetailActivity::class.java)
-        intent.putExtra("product",product)
+        val intent = Intent(this, DetailActivity::class.java)
+        intent.putExtra("product", product)
         startActivity(intent)
     }
 
-    private fun notificationListener(){
+    private fun setupListener() {
         binding.ivNotification.setOnClickListener {
             this.notification()
         }
+        binding.fb.setOnClickListener {
+            binding.rv.smoothScrollToPosition(0)
+        }
+
+        binding.rv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+            val fadeOut = AlphaAnimation(1.0f, 0.0f).apply {
+                duration = 1000
+            }
+
+            val fadeIn = AlphaAnimation(0.0f, 1.0f).apply {
+                duration = 1000
+            }
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (!binding.rv.canScrollVertically(-1)) {
+                    binding.fb.visibility = View.GONE
+                    binding.fb.startAnimation(fadeOut)
+                    flag = true
+                } else if (flag) {
+                    binding.fb.visibility = View.VISIBLE
+                    binding.fb.startAnimation(fadeIn)
+                    flag = false
+                }
+            }
+        })
     }
 
     private fun addOnBackPressedCallback() {
@@ -94,6 +127,7 @@ class MainActivity : AppCompatActivity(),ProductAdapterListener {
                         when (p1) {
                             DialogInterface.BUTTON_POSITIVE ->
                                 this@MainActivity.finish()
+
                             DialogInterface.BUTTON_NEGATIVE ->
                                 p0.dismiss()
                         }
@@ -108,7 +142,7 @@ class MainActivity : AppCompatActivity(),ProductAdapterListener {
         this.onBackPressedDispatcher.addCallback(this, callback)
     }
 
-    private fun setupNotificationChannel(){
+    private fun setupNotificationChannel() {
         this.notificationChannelCreate()
     }
 
