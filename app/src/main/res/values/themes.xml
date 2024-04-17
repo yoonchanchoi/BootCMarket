@@ -6,4 +6,10 @@
     </style>
 
     <style name="Theme.BootCMarket" parent="Base.Theme.BootCMarket" />
+
+
+    <style name="round" parent="ShapeAppearance.Material3.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50dp</item>
+    </style>
 </resources>

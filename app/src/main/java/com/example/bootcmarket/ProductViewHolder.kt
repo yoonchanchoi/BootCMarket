@@ -19,6 +19,8 @@ class ProductViewHolder(
         binding.tvChatCnt.text = product.chat.toString()
 
         binding.itemProduct.setOnClickListener { productAdapterListener.onItemClick(product) }
-
+        binding.itemProduct.setOnLongClickListener {
+            productAdapterListener.onItemLognClick(adapterPosition)
+        }
     }
 }
